@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shopify Store Creation — Complete Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+============================================================ */
+:root {
+  --green: #95BF47;
+  --green-bright: #b8e05c;
+  --green-dark: #5a8a1f;
+  --green-glow: rgba(149,191,71,0.15);
+  --accent: #FFB547;
+  --red: #ff6b6b;
+  --blue: #5b9bd5;
+
+  --bg: #080c08;
+  --bg2: #0e130e;
+  --surface: #121812;
+  --surface2: #1a221a;
+  --surface3: #222d22;
+  --border: rgba(149,191,71,0.12);
+  --border2: rgba(255,255,255,0.06);
+  --text: #e8f0e8;
+  --text2: #9aab9a;
+  --text3: #5a6a5a;
+
+  --sidebar-w: 280px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-green: 0 0 30px rgba(149,191,71,0.12);
+}
+[data-theme="light"] {
+  --bg: #f4f7f0;
+  --bg2: #edf2e8;
+  --surface: #ffffff;
+  --surface2: #f0f5ec;
+  --surface3: #e5eddf;
+  --border: rgba(90,138,31,0.2);
+  --border2: rgba(0,0,0,0.08);
+  --text: #1a2a1a;
+  --text2: #4a6a4a;
+  --text3: #8aaa8a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Bricolage Grotesque',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7;transition:background var(--transition),color var(--transition)}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--green-dark);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--green)}
+
+::selection{background:var(--green-glow);color:var(--green-bright)}
+
+/* ============================================================
+   READING PROGRESS BAR
+============================================================ */
+#reading-progress{
+  position:fixed;top:0;left:0;height:3px;z-index:9999;
+  background:linear-gradient(90deg,var(--green),var(--accent),var(--green-bright));
+  width:0%;transition:width 0.1s linear;
+  box-shadow:0 0 10px var(--green);
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+#sidebar{
+  position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;z-index:200;
+  transition:transform var(--transition);overflow:hidden;
+}
+.sidebar-top{
+  padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.logo-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+}
+.logo-text{font-family:'Clash Display',sans-serif;font-weight:700;font-size:15px;line-height:1.2}
+.logo-text span{display:block;font-size:10px;font-weight:400;color:var(--text2);font-family:'Bricolage Grotesque',sans-serif}
+
+/* Search */
+.search-wrap{position:relative}
+.search-wrap input{
+  width:100%;padding:9px 12px 9px 34px;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:13px;
+  outline:none;transition:border-color var(--transition);
+}
+.search-wrap input:focus{border-color:var(--green)}
+.search-wrap input::placeholder{color:var(--text3)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px}
+
+/* Nav */
+.nav-body{flex:1;overflow-y:auto;padding:12px 12px 0}
+.nav-label{
+  font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--text3);padding:8px 8px 6px;margin-top:6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border-radius:9px;cursor:pointer;font-size:13px;color:var(--text2);
+  transition:all var(--transition);text-decoration:none;margin-bottom:2px;
+  position:relative;
+}
+.nav-item:hover{background:var(--green-glow);color:var(--text)}
+.nav-item.active{background:var(--green-glow);color:var(--green);font-weight:600}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;background:var(--green);border-radius:0 3px 3px 0;
+}
+.nav-item.completed .nav-num{background:var(--green)!important;color:#fff!important}
+.nav-num{
+  width:22px;height:22px;border-radius:50%;background:var(--surface3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;transition:all var(--transition);color:var(--text3);
+}
+.nav-item.active .nav-num{background:var(--green);color:#fff}
+.nav-badge{
+  margin-left:auto;font-size:9px;padding:2px 6px;border-radius:99px;
+  background:var(--surface3);color:var(--text3);font-weight:600;letter-spacing:0.5px;
+}
+
+/* Sidebar bottom */
+.sidebar-bottom{padding:14px 16px;border-top:1px solid var(--border);flex-shrink:0}
+.progress-mini{margin-bottom:10px}
+.progress-mini-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:5px}
+.progress-bar-track{height:5px;background:var(--surface3);border-radius:99px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:99px;width:0%;transition:width 0.5s ease}
+
+.sidebar-actions{display:flex;gap:6px}
+.sb-btn{
+  flex:1;padding:7px 0;border-radius:8px;font-size:11px;font-weight:600;
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.sb-btn:hover{background:var(--surface3);color:var(--text);border-color:var(--border)}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+#topbar{
+  position:fixed;top:0;left:var(--sidebar-w);right:0;height:56px;
+  background:rgba(8,12,8,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);z-index:100;
+  display:flex;align-items:center;padding:0 28px;gap:12px;
+}
+[data-theme="light"] #topbar{background:rgba(244,247,240,0.9)}
+.topbar-title{font-size:14px;font-weight:600;color:var(--text2);flex:1}
+.topbar-title span{color:var(--text)}
+.tb-btn{
+  padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border2);background:var(--surface2);color:var(--text2);
+  transition:all var(--transition);display:flex;align-items:center;gap:5px;
+}
+.tb-btn:hover{background:var(--surface3);color:var(--text)}
+.tb-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.tb-btn.primary:hover{background:var(--green-bright);color:#111}
+#menu-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--text);font-size:20px;padding:6px}
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+#main{margin-left:var(--sidebar-w);padding-top:56px;min-height:100vh}
+.page{display:none;animation:pageIn 0.4s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Search Results Page */
+#search-page{display:none}
+#search-page.active{display:block}
+.search-result-item{
+  padding:16px 20px;border-radius:var(--radius);background:var(--surface);
+  border:1px solid var(--border2);margin-bottom:10px;cursor:pointer;
+  transition:border-color var(--transition);
+}
+.search-result-item:hover{border-color:var(--green)}
+.search-result-item h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.search-result-item p{font-size:12px;color:var(--text2)}
+.search-highlight{background:rgba(149,191,71,0.25);color:var(--green-bright);border-radius:3px;padding:0 2px}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{
+  position:relative;overflow:hidden;padding:70px 56px 60px;
+  background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 60%,rgba(14,30,14,0.8) 100%);
+  border-bottom:1px solid var(--border);
+}
+.hero-grid{
+  position:absolute;inset:0;opacity:0.04;pointer-events:none;
+  background-image:linear-gradient(var(--green) 1px,transparent 1px),linear-gradient(90deg,var(--green) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.hero-orb{
+  position:absolute;width:600px;height:600px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(149,191,71,0.08) 0%,transparent 65%);
+  top:-200px;right:-100px;
+}
+.hero-orb2{
+  position:absolute;width:300px;height:300px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,181,71,0.06) 0%,transparent 65%);
+  bottom:0;left:200px;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--green-glow);border:1px solid var(--border);
+  border-radius:99px;padding:5px 14px;font-size:11px;color:var(--green);
+  font-weight:600;letter-spacing:0.5px;margin-bottom:22px;
+  animation:fadeUp 0.5s ease both;
+}
+.hero-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero h1{
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  font-size:clamp(34px,4.5vw,58px);line-height:1.08;letter-spacing:-1px;
+  animation:fadeUp 0.5s 0.08s ease both;
+}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero p{
+  font-size:16px;color:var(--text2);max-width:520px;
+  margin:18px 0 36px;animation:fadeUp 0.5s 0.16s ease both;
+}
+.hero-stats{display:flex;gap:0;animation:fadeUp 0.5s 0.24s ease both;flex-wrap:wrap}
+.stat{padding:14px 28px;border-right:1px solid var(--border);last-child{border-right:none}}
+.stat:first-child{padding-left:0}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Clash Display',sans-serif;font-weight:700;font-size:30px;color:var(--green);line-height:1}
+.stat-label{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;animation:fadeUp 0.5s 0.32s ease both}
+.btn{
+  padding:11px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;
+  font-family:'Bricolage Grotesque',sans-serif;transition:all var(--transition);display:inline-flex;align-items:center;gap:7px;
+  border:none;text-decoration:none;
+}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-bright);color:#111;transform:translateY(-2px);box-shadow:0 6px 20px rgba(149,191,71,0.3)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{background:var(--surface2);color:var(--text);transform:translateY(-2px)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============================================================
+   SECTION COMMONS
+============================================================ */
+.section{padding:56px 56px;border-bottom:1px solid var(--border);opacity:0;transform:translateY(24px);transition:opacity 0.55s ease,transform 0.55s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-hd{display:flex;align-items:flex-start;gap:16px;margin-bottom:36px}
+.section-icon{
+  width:50px;height:50px;border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  background:linear-gradient(135deg,var(--green-glow),rgba(149,191,71,0.04));
+  border:1px solid var(--border);
+}
+.section-hd-text{}
+.s-step{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+.s-title{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(20px,2.5vw,28px);line-height:1.2}
+.s-desc{font-size:14px;color:var(--text2);margin-top:8px;max-width:600px}
+
+/* ============================================================
+   CARDS
+============================================================ */
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:22px;
+  transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition);
+}
+.card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:var(--shadow-green)}
+.card-icon{font-size:28px;margin-bottom:14px}
+.card h3{font-family:'Clash Display',sans-serif;font-weight:600;font-size:15px;margin-bottom:7px}
+.card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ============================================================
+   STEP LIST
+============================================================ */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:16px 18px;
+  transition:border-color var(--transition);
+}
+.step:hover{border-color:rgba(149,191,71,0.3)}
+.step-bullet{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;
+}
+.step h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.step p{font-size:13px;color:var(--text2)}
+.step-check .step-bullet{background:linear-gradient(135deg,#2ecc71,#27ae60)}
+
+/* ============================================================
+   ALERTS / CALLOUTS
+============================================================ */
+.alert{
+  border-radius:var(--radius);padding:15px 18px;
+  display:flex;gap:12px;align-items:flex-start;margin:18px 0;
+}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.alert p{font-size:12px;color:var(--text2);line-height:1.55}
+.alert-info{background:rgba(149,191,71,0.07);border:1px solid rgba(149,191,71,0.2)}
+.alert-info h4{color:var(--green)}
+.alert-warn{background:rgba(255,181,71,0.07);border:1px solid rgba(255,181,71,0.2)}
+.alert-warn h4{color:var(--accent)}
+.alert-danger{background:rgba(255,107,107,0.07);border:1px solid rgba(255,107,107,0.2)}
+.alert-danger h4{color:var(--red)}
+
+/* ============================================================
+   TABLE
+============================================================ */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border2)}
+table{width:100%;border-collapse:collapse}
+th{
+  background:var(--surface2);text-align:left;padding:12px 16px;
+  font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text2);
+}
+td{
+  padding:12px 16px;font-size:13px;border-top:1px solid var(--border2);
+  transition:background var(--transition);
+}
+tr:hover td{background:var(--green-glow)}
+td:first-child{font-weight:500}
+td:last-child{color:var(--text2)}
+
+/* ============================================================
+   COMPARE / OPTION CARDS
+============================================================ */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.compare{grid-template-columns:1fr}}
+.opt-card{
+  border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border2);
+  background:var(--surface);position:relative;overflow:hidden;transition:border-color var(--transition);
+}
+.opt-card.featured{border-color:rgba(149,191,71,0.35)}
+.opt-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--border2);
+}
+.opt-card.featured::after{background:linear-gradient(90deg,var(--green),var(--green-bright))}
+.opt-badge{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text3);margin-bottom:8px;
+}
+.opt-card.featured .opt-badge{color:var(--green)}
+.opt-card h3{font-family:'Clash Display',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px}
+.opt-card ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.opt-card ul li{font-size:13px;color:var(--text2);display:flex;gap:8px;align-items:flex-start}
+.opt-card ul li::before{content:'→';color:var(--green);flex-shrink:0;margin-top:1px}
+
+/* ============================================================
+   CODE BLOCK
+============================================================ */
+.code-wrap{
+  background:#050a05;border:1px solid var(--border2);border-radius:var(--radius);
+  margin:16px 0;overflow:hidden;position:relative;
+}
+.code-header{
+  display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border2);
+  background:rgba(255,255,255,0.02);
+}
+.code-dots{display:flex;gap:6px;margin-right:10px}
+.code-dots span{width:10px;height:10px;border-radius:50%;background:var(--border2)}
+.code-dots span:nth-child(1){background:#ff5f57}
+.code-dots span:nth-child(2){background:#ffbd2e}
+.code-dots span:nth-child(3){background:#28c840}
+.code-lang{font-size:11px;color:var(--text3);font-family:'Bricolage Grotesque',sans-serif}
+.copy-btn{
+  margin-left:auto;font-size:11px;padding:3px 10px;border-radius:6px;
+  background:var(--surface3);border:1px solid var(--border2);color:var(--text2);cursor:pointer;
+  transition:all var(--transition);font-family:'Bricolage Grotesque',sans-serif;
+}
+.copy-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green)}
+pre{
+  padding:18px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.7;
+  overflow-x:auto;color:#c8e6c9;
+}
+.kw{color:#ff7b7b}.str{color:#95BF47}.cmt{color:#4a5a4a;font-style:italic}.fn{color:#FFD700}.tag{color:#64b5f6}.attr{color:#FFB547}
+
+/* ============================================================
+   TABS
+============================================================ */
+.tabs{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+.tab-btn{
+  padding:8px 18px;border-radius:9px;font-size:13px;font-weight:600;
+  border:1px solid var(--border2);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.tab-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:pageIn 0.3s ease}
+
+/* ============================================================
+   THEME PICKER
+============================================================ */
+.theme-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:700px}
+@media(max-width:600px){.theme-picker{grid-template-columns:1fr 1fr}}
+.theme-card{
+  border-radius:var(--radius);overflow:hidden;
+  border:2px solid var(--border2);cursor:pointer;transition:all var(--transition);
+}
+.theme-card:hover,.theme-card.picked{border-color:var(--green);transform:translateY(-3px)}
+.theme-preview{height:100px;overflow:hidden;position:relative}
+.theme-body{background:var(--surface2);padding:10px 12px}
+.theme-body h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.theme-body p{font-size:11px;color:var(--text2)}
+.theme-selected-badge{
+  display:none;position:absolute;top:7px;right:7px;
+  background:var(--green);color:#fff;font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:99px;
+}
+.theme-card.picked .theme-selected-badge{display:block}
+
+/* Dawn preview */
+.dawn-pre{background:#fff;display:flex;flex-direction:column}
+.dawn-pre .d-nav{height:20px;background:#1a1a1a;display:flex;align-items:center;padding:0 8px;gap:5px}
+.dawn-pre .d-nav span{height:3px;width:30px;background:rgba(255,255,255,0.6);border-radius:2px}
+.dawn-pre .d-nav span:last-child{margin-left:auto;width:12px}
+.dawn-pre .d-hero{flex:1;background:linear-gradient(135deg,#f5f5f5,#e0e0e0);padding:10px;display:flex;gap:8px}
+.dawn-pre .d-txt{flex:1;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.dawn-pre .d-txt div{height:5px;background:#1a1a1a;border-radius:3px;opacity:0.15}
+.dawn-pre .d-txt div:first-child{width:80%;opacity:0.25}
+.dawn-pre .d-txt div:last-child{width:35%;height:14px;background:#1a1a1a;border-radius:4px;opacity:0.2}
+.dawn-pre .d-img{width:40px;background:rgba(0,0,0,0.08);border-radius:4px}
+
+/* Shrine preview */
+.shrine-pre{background:#111;display:flex;flex-direction:column}
+.shrine-pre .s-nav{height:20px;background:#e41c1c;display:flex;align-items:center;padding:0 8px}
+.shrine-pre .s-hero{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px}
+.shrine-pre .s-hero div{background:rgba(255,255,255,0.05);border-radius:3px}
+
+/* Prestige preview */
+.prestige-pre{background:#f8f2e8;display:flex;flex-direction:column}
+.prestige-pre .p-nav{height:20px;background:#2c2010;display:flex;align-items:center;padding:0 8px;gap:5px}
+.prestige-pre .p-nav span{height:2px;width:25px;background:rgba(255,255,255,0.5);border-radius:2px}
+.prestige-pre .p-hero{flex:1;padding:10px;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.prestige-pre .p-hero div{height:4px;background:#2c2010;border-radius:2px;opacity:0.15}
+.prestige-pre .p-hero div:first-child{width:70%;opacity:0.3}
+.prestige-pre .p-hero div:last-child{width:40%;height:13px;border-radius:4px;opacity:0.2}
+
+/* ============================================================
+   APP CARDS
+============================================================ */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.app-card{
+  display:flex;gap:14px;padding:16px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:var(--radius);
+  transition:border-color var(--transition),transform var(--transition);
+}
+.app-card:hover{border-color:rgba(149,191,71,0.3);transform:translateY(-2px)}
+.app-logo{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.app-info h4{font-size:13px;font-weight:600;margin-bottom:3px}
+.app-info p{font-size:12px;color:var(--text2)}
+.app-tag{
+  display:inline-block;margin-top:5px;font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:99px;
+  background:rgba(149,191,71,0.1);color:var(--green);border:1px solid rgba(149,191,71,0.2);
+}
+
+/* ============================================================
+   WIREFRAME
+============================================================ */
+.wireframe{border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;max-width:520px}
+.wf-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-bottom:1px solid var(--border2);
+  font-size:13px;transition:background var(--transition);cursor:default;
+}
+.wf-row:last-child{border-bottom:none}
+.wf-row:hover{background:var(--green-glow)}
+.wf-left h5{font-weight:600;font-size:13px;margin-bottom:2px}
+.wf-left p{font-size:11px;color:var(--text2)}
+.wf-num{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(149,191,71,0.12);color:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+
+/* ============================================================
+   CHECKLIST
+============================================================ */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:var(--surface);border:1px solid var(--border2);border-radius:10px;
+  cursor:pointer;transition:all var(--transition);user-select:none;
+}
+.check-item:hover{border-color:rgba(149,191,71,0.25)}
+.check-item.done{border-color:rgba(149,191,71,0.35);background:rgba(149,191,71,0.03)}
+.checkbox{
+  width:20px;height:20px;border-radius:6px;border:2px solid var(--border2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:all var(--transition);
+}
+.check-item.done .checkbox{background:var(--green);border-color:var(--green);color:#fff}
+.check-item.done span{text-decoration:line-through;color:var(--text2)}
+.check-item span{font-size:13px;flex:1}
+.check-cat{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:6px 0 2px}
+
+/* ============================================================
+   GATEWAY CARDS
+============================================================ */
+.gateway-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.gw-card{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:18px;text-align:center;transition:all var(--transition);
+}
+.gw-card:hover{border-color:rgba(149,191,71,0.3);transform:translateY(-2px)}
+.gw-icon{font-size:32px;margin-bottom:10px}
+.gw-card h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.gw-card p{font-size:11px;color:var(--text2)}
+
+/* ============================================================
+   QUIZ PAGE
+============================================================ */
+.quiz-wrap{max-width:680px;margin:0 auto;padding:56px}
+.quiz-progress-wrap{margin-bottom:28px}
+.quiz-progress-num{font-size:12px;color:var(--text2);margin-bottom:7px;display:flex;justify-content:space-between}
+.quiz-track{height:6px;background:var(--surface3);border-radius:99px;overflow:hidden}
+.quiz-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:99px;transition:width 0.5s ease}
+.quiz-q{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(17px,2.5vw,22px);margin-bottom:24px;line-height:1.35}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.quiz-opt{
+  padding:14px 18px;border-radius:var(--radius);
+  border:1px solid var(--border2);background:var(--surface);
+  cursor:pointer;font-size:14px;color:var(--text2);
+  transition:all var(--transition);text-align:left;
+}
+.quiz-opt:hover:not([disabled]){border-color:var(--green);color:var(--text);background:var(--green-glow)}
+.quiz-opt.correct{border-color:#2ecc71!important;background:rgba(46,204,113,0.1)!important;color:#2ecc71!important}
+.quiz-opt.wrong{border-color:var(--red)!important;background:rgba(255,107,107,0.1)!important;color:var(--red)!important}
+.quiz-opt.reveal-correct{border-color:#2ecc71;background:rgba(46,204,113,0.07);color:#2ecc71}
+.quiz-feedback{
+  padding:14px 18px;border-radius:var(--radius);font-size:13px;
+  margin-bottom:20px;display:none;
+}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct-fb{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);color:#2ecc71}
+.quiz-feedback.wrong-fb{background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:var(--red)}
+.quiz-nav{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.quiz-score{
+  text-align:center;padding:40px 20px;display:none;
+}
+.quiz-score h2{font-family:'Clash Display',sans-serif;font-weight:700;font-size:32px;margin:14px 0}
+.quiz-score p{color:var(--text2);margin-bottom:24px}
+.score-ring{
+  width:110px;height:110px;border-radius:50%;margin:0 auto 10px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  border:4px solid var(--green);background:rgba(149,191,71,0.05);
+}
+.score-ring span{font-family:'Clash Display',sans-serif;font-weight:700;font-size:28px;color:var(--green)}
+.score-ring small{font-size:11px;color:var(--text2)}
+
+/* ============================================================
+   SIMULATOR PAGE
+============================================================ */
+.sim-wrap{padding:56px}
+.sim-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr}}
+.sim-panel{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden}
+.sim-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border2);
+  font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+.sim-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+.sim-field label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.sim-field input,.sim-field select,.sim-field textarea{
+  width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:13px;outline:none;
+  transition:border-color var(--transition);resize:none;
+}
+.sim-field input:focus,.sim-field select:focus,.sim-field textarea:focus{border-color:var(--green)}
+.sim-field select option{background:var(--surface2)}
+
+/* Store preview */
+.store-preview{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border2);background:#fff}
+.store-nav-bar{
+  height:44px;background:#1a1a1a;display:flex;align-items:center;
+  padding:0 16px;gap:12px;
+}
+.store-logo-preview{font-family:'Clash Display',sans-serif;font-weight:700;font-size:14px;color:#fff}
+.store-nav-links{display:flex;gap:14px;margin-left:auto}
+.store-nav-links span{font-size:11px;color:rgba(255,255,255,0.6)}
+.store-hero-band{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  padding:28px 20px;gap:8px;
+}
+.store-hero-band h2{font-family:'Clash Display',sans-serif;font-weight:700;font-size:20px;color:#1a1a1a;text-align:center}
+.store-hero-band p{font-size:12px;color:#666;text-align:center}
+.store-cta-btn{
+  padding:9px 20px;border-radius:7px;font-size:13px;font-weight:600;
+  color:#fff;border:none;cursor:default;margin-top:4px;
+}
+.store-products{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px}
+.store-product{background:#f5f5f5;border-radius:6px;overflow:hidden}
+.store-product-img{height:60px;background:linear-gradient(135deg,#e0e0e0,#d0d0d0);display:flex;align-items:center;justify-content:center;font-size:20px}
+.store-product-info{padding:6px 8px}
+.store-product-info p{font-size:10px;color:#333;font-weight:600}
+.store-product-info span{font-size:10px;color:#666}
+
+/* ============================================================
+   NOTES PAGE
+============================================================ */
+.notes-wrap{padding:56px;max-width:900px}
+.notes-toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.notes-btn{
+  padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text2);
+  transition:all var(--transition);
+}
+.notes-btn:hover{background:var(--surface3);color:var(--text)}
+.notes-btn.active-note-btn{background:var(--green);color:#fff;border-color:var(--green)}
+#notes-editor{
+  width:100%;min-height:340px;padding:18px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:14px;
+  outline:none;resize:vertical;transition:border-color var(--transition);line-height:1.8;
+}
+#notes-editor:focus{border-color:var(--green)}
+.notes-saved{
+  font-size:12px;color:var(--green);display:flex;align-items:center;gap:5px;
+  opacity:0;transition:opacity 0.3s;
+}
+.notes-saved.show{opacity:1}
+.saved-notes-list{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.saved-note{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:14px 16px;cursor:pointer;transition:border-color var(--transition);
+}
+.saved-note:hover{border-color:rgba(149,191,71,0.3)}
+.saved-note-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.saved-note-head h4{font-size:13px;font-weight:600}
+.saved-note-head span{font-size:11px;color:var(--text3)}
+.saved-note p{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del-note-btn{
+  background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;
+  padding:2px 6px;border-radius:4px;transition:color var(--transition);
+}
+.del-note-btn:hover{color:var(--red)}
+
+/* ============================================================
+   TOAST NOTIFICATION
+============================================================ */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--surface);border:1px solid var(--green);border-radius:10px;
+  padding:12px 18px;font-size:13px;color:var(--text);
+  box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;
+  transform:translateY(20px);opacity:0;transition:all 0.3s ease;pointer-events:none;
+}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ============================================================
+   MODAL
+============================================================ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
+  z-index:500;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  width:90%;max-width:560px;max-height:80vh;overflow-y:auto;
+  transform:scale(0.95);transition:transform 0.3s;
+}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid var(--border2);
+}
+.modal-header h3{font-family:'Clash Display',sans-serif;font-weight:700;font-size:18px}
+.modal-close{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:8px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;color:var(--text2);transition:all var(--transition);
+}
+.modal-close:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.modal-body{padding:24px}
+
+/* ============================================================
+   GLOSSARY
+============================================================ */
+.glossary-search{
+  width:100%;padding:10px 14px;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:9px;
+  color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:14px;outline:none;
+  margin-bottom:18px;transition:border-color var(--transition);
+}
+.glossary-search:focus{border-color:var(--green)}
+.glossary-list{display:flex;flex-direction:column;gap:10px}
+.glossary-item{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px;
+  transition:border-color var(--transition);display:none;
+}
+.glossary-item.visible{display:block}
+.glossary-item:hover{border-color:rgba(149,191,71,0.3)}
+.glossary-item dt{font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px}
+.glossary-item dd{font-size:13px;color:var(--text2)}
+
+/* ============================================================
+   FONT SIZE CONTROLS
+============================================================ */
+[data-fontsize="sm"] .section{font-size:13px}
+[data-fontsize="lg"] .section{font-size:16px}
+
+/* ============================================================
+   PRINT STYLES
+============================================================ */
+@media print{
+  #sidebar,#topbar,#reading-progress,#toast{display:none!important}
+  #main{margin-left:0!important;padding-top:0!important}
+  .section{opacity:1!important;transform:none!important;border:none!important}
+  .page{display:block!important}
+  .hero{padding:30px!important;background:#fff!important;color:#000!important}
+  body{background:#fff!important;color:#000!important}
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  #topbar{left:0}
+  #menu-toggle{display:flex}
+  .hero,.section,.sim-wrap,.quiz-wrap,.notes-wrap{padding:40px 22px}
+  .hero-stats .stat{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+
+<div id="reading-progress"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <div class="logo">
+      <div class="logo-icon">🛍</div>
+      <div class="logo-text">Shopify Guide<span>Complete Store Creation</span></div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="sidebar-search" placeholder="Search topics..." oninput="liveSearch(this.value)"/>
+    </div>
+  </div>
+
+  <div class="nav-body">
+    <div class="nav-label">Tutorial Modules</div>
+    <a class="nav-item" data-page="home" onclick="gotoPage('home',this)">
+      <span class="nav-num">🏠</span> Dashboard
+    </a>
+    <a class="nav-item active" data-page="intro" onclick="gotoPage('intro',this)">
+      <span class="nav-num">1</span> Introduction
+    </a>
+    <a class="nav-item" data-page="partners" onclick="gotoPage('partners',this)">
+      <span class="nav-num">2</span> Partners Dashboard
+    </a>
+    <a class="nav-item" data-page="client-store" onclick="gotoPage('client-store',this)">
+      <span class="nav-num">3</span> Client Transfer Store
+    </a>
+    <a class="nav-item" data-page="collaborator" onclick="gotoPage('collaborator',this)">
+      <span class="nav-num">4</span> Collaborator Access
+    </a>
+    <a class="nav-item" data-page="design" onclick="gotoPage('design',this)">
+      <span class="nav-num">5</span> Designing the Store
+    </a>
+    <a class="nav-item" data-page="global-settings" onclick="gotoPage('global-settings',this)">
+      <span class="nav-num">6</span> Global Theme Settings
+    </a>
+    <a class="nav-item" data-page="apps" onclick="gotoPage('apps',this)">
+      <span class="nav-num">7</span> Apps Integration
+    </a>
+    <a class="nav-item" data-page="products" onclick="gotoPage('products',this)">
+      <span class="nav-num">8</span> Adding Products
+    </a>
+    <a class="nav-item" data-page="collections" onclick="gotoPage('collections',this)">
+      <span class="nav-num">9</span> Collections & Nav
+    </a>
+    <a class="nav-item" data-page="payments" onclick="gotoPage('payments',this)">
+      <span class="nav-num">10</span> Payment & Checkout
+    </a>
+    <a class="nav-item" data-page="layout" onclick="gotoPage('layout',this)">
+      <span class="nav-num">11</span> Final Store Layout
+    </a>
+
+    <div class="nav-label" style="margin-top:14px">Tools</div>
+    <a class="nav-item" data-page="simulator" onclick="gotoPage('simulator',this)">
+      <span class="nav-num">⚡</span> Store Simulator
+    </a>
+    <a class="nav-item" data-page="quiz" onclick="gotoPage('quiz',this)">
+      <span class="nav-num">🧠</span> Knowledge Quiz
+    </a>
+    <a class="nav-item" data-page="notes" onclick="gotoPage('notes',this)">
+      <span class="nav-num">📝</span> My Notes
+    </a>
+    <a class="nav-item" data-page="glossary" onclick="gotoPage('glossary',this)">
+      <span class="nav-num">📖</span> Glossary
+    </a>
+    <a class="nav-item" data-page="checklist" onclick="gotoPage('checklist',this)">
+      <span class="nav-num">✅</span> Launch Checklist
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="progress-mini">
+      <div class="progress-mini-label">
+        <span>Progress</span>
+        <span id="prog-count">0/11</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="prog-fill"></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button class="sb-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
+      <button class="sb-btn" onclick="adjustFont('sm')">A-</button>
+      <button class="sb-btn" onclick="adjustFont('md')">A</button>
+      <button class="sb-btn" onclick="adjustFont('lg')">A+</button>
+      <button class="sb-btn" onclick="window.print()">🖨</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== TOPBAR ===== -->
+<header id="topbar">
+  <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="topbar-title"><span id="topbar-title-text">Introduction</span></div>
+  <button class="tb-btn" onclick="gotoPage('glossary',null)">📖 Glossary</button>
+  <button class="tb-btn" onclick="openBookmarkModal()">🔖 Bookmarks</button>
+  <button class="tb-btn primary" onclick="gotoPage('quiz',null)">🧠 Take Quiz</button>
+</header>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+<!-- ─── SEARCH RESULTS PAGE ─── -->
+<div id="search-page" class="page">
+  <div class="hero" style="padding:40px 56px 30px">
+    <div class="hero-grid"></div>
+    <h2 style="font-family:'Clash Display',sans-serif;font-weight:700;font-size:22px">Search Results for: <em id="search-query-label" style="color:var(--green)"></em></h2>
+  </div>
+  <div style="padding:28px 56px" id="search-results-body"></div>
+</div>
+
+<!-- ─── DASHBOARD PAGE ─── -->
+<div id="page-home" class="page">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-orb2"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Complete Tutorial</div>
+    <h1>Shopify Store<br/><em>Creation & Setup</em></h1>
+    <p>A complete, interactive workflow for building professional Shopify stores — from Partners dashboard to client handoff.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">11</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Steps</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Tools</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Quiz</div></div>
+    </div>
+    <div class="hero-cta" style="margin-top:28px">
+      <button class="btn btn-primary" onclick="gotoPage('intro',null)">▶ Start Learning</button>
+      <button class="btn btn-outline" onclick="gotoPage('simulator',null)">⚡ Try Simulator</button>
+      <button class="btn btn-outline" onclick="gotoPage('checklist',null)">✅ Checklist</button>
+    </div>
+  </div>
+
+  <div style="padding:40px 56px">
+    <h2 style="font-family:'Clash Display',sans-serif;font-weight:700;font-size:22px;margin-bottom:20px">All Modules</h2>
+    <div class="grid grid-3">
+      <div class="card" onclick="gotoPage('intro',null)" style="cursor:pointer"><div class="card-icon">👋</div><h3>Introduction</h3><p>Overview of what we'll build and the tools involved.</p></div>
+      <div class="card" onclick="gotoPage('partners',null)" style="cursor:pointer"><div class="card-icon">🏢</div><h3>Partners Dashboard</h3><p>Managing stores from your Shopify Partners account.</p></div>
+      <div class="card" onclick="gotoPage('client-store',null)" style="cursor:pointer"><div class="card-icon">🏗</div><h3>Client Transfer Store</h3><p>Create from scratch and transfer to client.</p></div>
+      <div class="card" onclick="gotoPage('collaborator',null)" style="cursor:pointer"><div class="card-icon">🤝</div><h3>Collaborator Access</h3><p>Request access to existing stores via code.</p></div>
+      <div class="card" onclick="gotoPage('design',null)" style="cursor:pointer"><div class="card-icon">🎨</div><h3>Design & Themes</h3><p>Theme editor, Dawn, custom Liquid sections.</p></div>
+      <div class="card" onclick="gotoPage('global-settings',null)" style="cursor:pointer"><div class="card-icon">⚙️</div><h3>Global Settings</h3><p>Logo, colors, typography, social links.</p></div>
+      <div class="card" onclick="gotoPage('apps',null)" style="cursor:pointer"><div class="card-icon">🔌</div><h3>Apps Integration</h3><p>Install Judge.me, Search & Discovery, and more.</p></div>
+      <div class="card" onclick="gotoPage('products',null)" style="cursor:pointer"><div class="card-icon">📦</div><h3>Adding Products</h3><p>CSV import and manual upload methods.</p></div>
+      <div class="card" onclick="gotoPage('collections',null)" style="cursor:pointer"><div class="card-icon">📂</div><h3>Collections & Nav</h3><p>Organize products and build navigation menus.</p></div>
+      <div class="card" onclick="gotoPage('payments',null)" style="cursor:pointer"><div class="card-icon">💳</div><h3>Payments & Checkout</h3><p>Gateways, currencies, and checkout config.</p></div>
+      <div class="card" onclick="gotoPage('layout',null)" style="cursor:pointer"><div class="card-icon">🚀</div><h3>Final Store Layout</h3><p>Homepage structure and pre-launch checklist.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 1: INTRO ─── -->
+<div id="page-intro" class="page active">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Module 01</div>
+    <h1>Introduction &<br/><em>Overview</em></h1>
+    <p>Welcome to the complete Shopify store creation guide. Here's everything we'll cover from start to finish.</p>
+  </div>
+  <div class="section visible">
+    <div class="section-hd">
+      <div class="section-icon">🎯</div>
+      <div class="section-hd-text">
+        <div class="s-step">What You'll Learn</div>
+        <h2 class="s-title">Complete Shopify Workflow</h2>
+      </div>
+    </div>
+    <div class="grid grid-3">
+      <div class="card"><div class="card-icon">🏪</div><h3>Shopify Partners</h3><p>How to use the Partners dashboard to manage client stores without owning a Shopify plan.</p></div>
+      <div class="card"><div class="card-icon">🔄</div><h3>Store Transfer</h3><p>Create stores on behalf of clients and transfer full ownership when the project is complete.</p></div>
+      <div class="card"><div class="card-icon">🎨</div><h3>Theme Design</h3><p>Customize themes with the visual editor, custom Liquid sections, and global brand settings.</p></div>
+      <div class="card"><div class="card-icon">🔌</div><h3>App Integration</h3><p>Add reviews, search filters, Instagram feed, and Facebook integration apps seamlessly.</p></div>
+      <div class="card"><div class="card-icon">📦</div><h3>Product Management</h3><p>Upload products via CSV bulk import or manual entry with full SEO and variant support.</p></div>
+      <div class="card"><div class="card-icon">🚀</div><h3>Launch Ready</h3><p>Configure payments, legal pages, navigation, and hand off a production-ready store.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 2: PARTNERS ─── -->
+<div id="page-partners" class="page">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Module 02</div>
+    <h1>Shopify Partners<br/><em>Dashboard</em></h1>
+    <p>Your central hub for creating, managing, and transferring client stores without subscription fees.</p>
+  </div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🏢</div><div class="section-hd-text"><div class="s-step">Getting Started</div><h2 class="s-title">Navigating the Dashboard</h2><p class="s-desc">Log in at partners.shopify.com. You'll see your earnings, store list, and apps at a glance.</p></div></div>
+    <div class="grid grid-2" style="margin-bottom:24px">
+      <div class="steps">
+        <div class="step"><div class="step-bullet">1</div><div><h4>Log into Partners</h4><p>Visit partners.shopify.com and sign in with your partner credentials.</p></div></div>
+        <div class="step"><div class="step-bullet">2</div><div><h4>View All Stores</h4><p>Click <strong>Stores</strong> in the left menu to see the complete list of stores you manage.</p></div></div>
+        <div class="step"><div class="step-bullet">3</div><div><h4>Choose Working Method</h4><p>Decide between creating a Client Transfer Store or requesting Collaborator Access.</p></div></div>
+      </div>
+      <div>
+        <div class="card" style="background:var(--surface2)">
+          <h3 style="margin-bottom:12px;font-family:'Clash Display',sans-serif">Partner Account Benefits</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;font-size:13px;align-items:center"><span style="color:var(--green);font-size:16px">✓</span> Free development stores — no Shopify plan needed</div>
+            <div style="display:flex;gap:8px;font-size:13px;align-items:center"><span style="color:var(--green);font-size:16px">✓</span> Revenue share from referred merchants</div>
+            <div style="display:flex;gap:8px;font-size:13px;align-items:center"><span style="color:var(--green);font-size:16px">✓</span> Access to premium themes at no cost</div>
+            <div style="display:flex;gap:8px;font-size:13px;align-items:center"><span style="color:var(--green);font-size:16px">✓</span> Manage multiple clients from one account</div>
+            <div style="display:flex;gap:8px;font-size:13px;align-items:center"><span style="color:var(--green);font-size:16px">✓</span> Share preview links before going live</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info"><div class="alert-icon">💡</div><div><h4>Two Working Methods</h4><p>You can either <strong>Create a Client Transfer Store</strong> (for new builds from scratch) or <strong>Request Access via Collaborator Code</strong> (for existing stores). We cover both in detail in the next modules.</p></div></div>
+  </div>
+</div>
+
+<!-- ─── PAGE 3: CLIENT STORE ─── -->
+<div id="page-client-store" class="page">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Module 03</div>
+    <h1>Creating a Client<br/><em>Transfer Store</em></h1>
+    <p>Build from scratch under your Partner account, then transfer full ownership to your client.</p>
+  </div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🏗</div><div class="section-hd-text"><div class="s-step">When to Use</div><h2 class="s-title">Client Does NOT Have a Store Yet</h2></div></div>
+    <div class="alert alert-info" style="margin-bottom:28px"><div class="alert-icon">📌</div><div><h4>Use This Method When</h4><p>The client doesn't have an existing Shopify store and you're building the store completely from scratch for them.</p></div></div>
+    <div class="grid grid-2">
+      <div class="steps">
+        <div class="step"><div class="step-bullet">1</div><div><h4>Click "Create Store"</h4><p>From the Partners dashboard, click the Create Store button in the top-right corner.</p></div></div>
+        <div class="step"><div class="step-bullet">2</div><div><h4>Select "Client Store"</h4><p>Choose Client Store (not Development Store) so it can be transferred to the client later.</p></div></div>
+        <div class="step"><div class="step-bullet">3</div><div><h4>Enter Store URL</h4><p>Enter a valid, available store URL. Shopify shows real-time availability. Choose something brand-relevant.</p></div></div>
+        <div class="step"><div class="step-bullet">4</div><div><h4>Select Store Location</h4><p>Choose the correct country — India, US, UK, etc. This affects taxes and payment methods available.</p></div></div>
+        <div class="step"><div class="step-bullet">5</div><div><h4>Click "Create"</h4><p>Shopify creates the store under your partner account. You have full admin access to build it.</p></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card"><h3>🔒 Store stays under your account</h3><p>The store initially lives under YOUR partner account. The client doesn't own it yet — you manage it during development.</p></div>
+        <div class="card"><h3>🔗 Preview links available</h3><p>Share preview links with the client before launch to get feedback and approval without giving them admin access.</p></div>
+        <div class="alert alert-danger" style="margin:0"><div class="alert-icon">⚠️</div><div><h4>Access removed on transfer</h4><p>Once transferred to the client, your access is removed automatically. Future work requires a new collaborator code from the client.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 4: COLLABORATOR ─── -->
+<div id="page-collaborator" class="page">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Module 04</div>
+    <h1>Requesting<br/><em>Collaborator Access</em></h1>
+    <p>Access existing client stores securely using a 4-digit collaborator code with specific permissions.</p>
+  </div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🤝</div><div class="section-hd-text"><div class="s-step">Collaborator Method</div><h2 class="s-title">Accessing Existing Stores</h2></div></div>
+    <div class="compare" style="margin-bottom:28px">
+      <div class="opt-card featured"><div class="opt-badge">✅ Use When</div><h3>Client has an existing store</h3><ul><li>Client already has a live Shopify store</li><li>You previously transferred a store</li><li>Need access again for updates/changes</li><li>Working on a store you don't own</li></ul></div>
+      <div class="opt-card"><div class="opt-badge">⚙️ How it Works</div><h3>Code-based access request</h3><ul><li>Client enables collaborator access in settings</li><li>Client generates a unique 4-digit code</li><li>You enter the code in your Partners account</li><li>Client approves via email notification</li></ul></div>
+    </div>
+    <div class="steps" style="max-width:640px">
+      <div class="step"><div class="step-bullet">1</div><div><h4>Click "Request Access" in Partners</h4><p>From Partners dashboard, go to Stores → Request Access to start the process.</p></div></div>
+      <div class="step"><div class="step-bullet">2</div><div><h4>Enter the Store URL</h4><p>Type in the client's store URL (e.g., brandname.myshopify.com).</p></div></div>
+      <div class="step"><div class="step-bullet">3</div><div><h4>Enter Collaborator Code</h4><p>Enter the 4-digit code the client provides from Settings → Plan → Collaborators in their admin.</p></div></div>
+      <div class="step"><div class="step-bullet">4</div><div><h4>Select Required Permissions</h4><p>Choose only the permissions you actually need: Products, Themes, Orders, Settings, etc. Minimal is best.</p></div></div>
+      <div class="step"><div class="step-bullet">5</div><div><h4>Await Client Approval</h4><p>The client gets an email notification and approves access. You'll be notified when access is granted.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 5: DESIGN ─── -->
+<div id="page-design" class="page">
+  <div class="hero">
+    <div class="hero-grid"></div><div class="hero-orb"></div>
+    <div class="hero-eyebrow"><span class="hero-dot"></span>Module 05</div>
+    <h1>Designing the<br/><em>Store</em></h1>
+    <p>Use the Theme Editor, custom Liquid sections, and global settings to create a professional storefront.</p>
+  </div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🎨</div><div class="section-hd-text"><div class="s-step">Themes</div><h2 class="s-title">Choose & Customize a Theme</h2></div></div>
+
+    <div class="alert alert-danger" style="max-width:680px;margin-bottom:28px"><div class="alert-icon">🚨</div><div><h4>Golden Rule: NEVER Edit the Live Theme</h4><p>Always <strong>duplicate the live theme first</strong>, work on the draft copy, and only publish after final client approval. This prevents breaking a live store.</p></div></div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Select Theme</h3>
+    <div class="theme-picker" style="margin-bottom:28px">
+      <div class="theme-card picked" onclick="pickTheme(this,'Dawn')">
+        <div class="theme-preview dawn-pre">
+          <div class="d-nav"><span></span><span style="width:20px"></span><span style="width:30px;margin-left:auto"></span></div>
+          <div class="d-hero"><div class="d-txt"><div></div><div style="width:60%"></div><div></div></div><div class="d-img"></div></div>
+          <div class="theme-selected-badge">SELECTED</div>
+        </div>
+        <div class="theme-body"><h4>Dawn ⭐ Recommended</h4><p>Best for customization — clean, flexible, fast.</p></div>
+      </div>
+      <div class="theme-card" onclick="pickTheme(this,'Shrine')">
+        <div class="theme-preview shrine-pre">
+          <div class="s-nav"></div>
+          <div class="s-hero"><div></div><div></div><div></div><div></div></div>
+          <div class="theme-selected-badge">SELECTED</div>
+        </div>
+        <div class="theme-body"><h4>Shrine</h4><p>Bold editorial feel. Great for fashion brands.</p></div>
+      </div>
+      <div class="theme-card" onclick="pickTheme(this,'Prestige')">
+        <div class="theme-preview prestige-pre">
+          <div class="p-nav"><span></span><span style="width:20px"></span></div>
+          <div class="p-hero"><div></div><div style="width:65%"></div><div style="width:40%"></div></div>
+          <div class="theme-selected-badge">SELECTED</div>
+        </div>
+        <div class="theme-body"><h4>Prestige</h4><p>Luxury feel. Great for high-end products.</p></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'design-editor')">Theme Editor</button>
+      <button class="tab-btn" onclick="switchTab(this,'design-custom')">Custom Sections</button>
+      <button class="tab-btn" onclick="switchTab(this,'design-code')">Edit Code</button>
+    </div>
+
+    <div id="tab-design-editor" class="tab-panel active">
+      <div class="grid grid-2">
+        <div class="steps">
+          <div class="step"><div class="step-bullet">1</div><div><h4>Open Theme Editor</h4><p>Online Store → Themes → Customize. Opens the visual drag-and-drop editor.</p></div></div>
+          <div class="step"><div class="step-bullet">2</div><div><h4>Add & Rearrange Sections</h4><p>Drag sections to reorder: hero banner, featured products, testimonials, FAQs.</p></div></div>
+          <div class="step"><div class="step-bullet">3</div><div><h4>Edit Header & Footer</h4><p>Add logo, configure navigation links, enable social icons, add trust badges.</p></div></div>
+          <div class="step"><div class="step-bullet">4</div><div><h4>Add Video & Reviews</h4><p>Insert video sections for brand storytelling and review blocks via Judge.me.</p></div></div>
+        </div>
+        <div class="card" style="background:var(--surface2)"><h3 style="margin-bottom:12px">Section Types Available</h3>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Hero / Slideshow Banner</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Featured Products / Collections</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Trust Badges / Icon Row</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Testimonials / Reviews</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Video (YouTube / MP4)</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Image with Text</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Newsletter / Email Capture</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> Contact Form</div>
+            <div style="display:flex;gap:8px"><span style="color:var(--green)">▸</span> FAQs / Accordion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-design-custom" class="tab-panel">
+      <div class="grid grid-2">
+        <div class="alert alert-warn"><div class="alert-icon">⚡</div><div><h4>Option 1 — Custom Liquid Block</h4><p>In Theme Editor, click Add Section → Custom Liquid. Paste your HTML/CSS/JS directly. Best for simple additions.</p></div></div>
+        <div class="alert alert-info"><div class="alert-icon">💻</div><div><h4>Option 2 — Edit Code</h4><p>Go to ⋯ → Edit Code → Sections folder → Add new file. Name with <code style="background:var(--surface3);padding:1px 5px;border-radius:4px">.liquid</code> extension → Refresh to see it in editor.</p></div></div>
+      </div>
+    </div>
+
+    <div id="tab-design-code" class="tab-panel">
+      <p style="color:var(--text2);font-size:13px;margin-bottom:14px">Example custom Liquid section file (sections/custom-banner.liquid):</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">Liquid / JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmt">&lt;!-- sections/custom-banner.liquid --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"custom-banner section-{{ section.id }}"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>{{ section.settings.heading }}<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;p&gt;</span>{{ section.settings.subtext }}<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="kw">{% schema %}</span>
+{
+  <span class="str">"name"</span>: <span class="str">"Custom Banner"</span>,
+  <span class="str">"settings"</span>: [
+    { <span class="str">"type"</span>: <span class="str">"text"</span>, <span class="str">"id"</span>: <span class="str">"heading"</span>, <span class="str">"label"</span>: <span class="str">"Heading"</span>, <span class="str">"default"</span>: <span class="str">"Welcome"</span> },
+    { <span class="str">"type"</span>: <span class="str">"textarea"</span>, <span class="str">"id"</span>: <span class="str">"subtext"</span>, <span class="str">"label"</span>: <span class="str">"Subtext"</span> }
+  ],
+  <span class="str">"presets"</span>: [{ <span class="str">"name"</span>: <span class="str">"Custom Banner"</span> }]
+}
+<span class="kw">{% endschema %}</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 6: GLOBAL SETTINGS ─── -->
+<div id="page-global-settings" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 06</div><h1>Global Theme<br/><em>Settings</em></h1><p>Set the visual identity of the entire store — colors, typography, logo, and social links — from one place.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">⚙️</div><div class="section-hd-text"><div class="s-step">Theme Settings → Customize</div><h2 class="s-title">Brand Identity Configuration</h2></div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>What to Configure</th></tr></thead>
+        <tbody>
+          <tr><td>🖼️ Logo</td><td>Upload client's logo — SVG or PNG with transparent background. 250×100px recommended.</td></tr>
+          <tr><td>🎨 Brand Colors</td><td>Primary and secondary colors matching the client's brand guidelines exactly.</td></tr>
+          <tr><td>✨ Accent Colors</td><td>Accent/highlight color for buttons, links, sale badges, and CTAs.</td></tr>
+          <tr><td>🔤 Headings Font</td><td>Display/heading font for H1–H3. Match brand fonts if provided by client.</td></tr>
+          <tr><td>📝 Body Font</td><td>Body copy font, base size 16px, line-height 1.6+ for readability.</td></tr>
+          <tr><td>🖋 Custom Fonts</td><td>Upload .woff2 files if client has proprietary branded typefaces.</td></tr>
+          <tr><td>🔘 Button Styles</td><td>Border radius, padding, hover state colors for primary and secondary buttons.</td></tr>
+          <tr><td>🎯 Icon Colors</td><td>Cart, search, account, and menu icon color to match brand palette.</td></tr>
+          <tr><td>📱 Social Links</td><td>Facebook, Instagram, YouTube, TikTok URLs — icons render automatically in header/footer when enabled.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert-info" style="margin-top:20px"><div class="alert-icon">💡</div><div><h4>Social Icons Tip</h4><p>Social links added here automatically render as clickable icons in the header and footer — as long as the "Show social media icons" toggle is enabled in those sections. Add all platforms upfront.</p></div></div>
+  </div>
+</div>
+
+<!-- ─── PAGE 7: APPS ─── -->
+<div id="page-apps" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 07</div><h1>Apps<br/><em>Integration</em></h1><p>Extend your store with essential apps for reviews, search, social feeds, and marketing.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🔌</div><div class="section-hd-text"><div class="s-step">Shopify App Store</div><h2 class="s-title">Essential Apps to Install</h2></div></div>
+    <div class="app-grid" style="margin-bottom:28px">
+      <div class="app-card"><div class="app-logo" style="background:rgba(255,100,100,0.1)">⭐</div><div class="app-info"><h4>Judge.me Reviews</h4><p>Product reviews with photos, verified badges, and SEO snippets.</p><span class="app-tag">Free Plan ✓</span></div></div>
+      <div class="app-card"><div class="app-logo" style="background:rgba(149,191,71,0.1)">🔍</div><div class="app-info"><h4>Search & Discovery</h4><p>Advanced product filtering and smart search recommendations by Shopify.</p><span class="app-tag">Free ✓</span></div></div>
+      <div class="app-card"><div class="app-logo" style="background:rgba(225,48,108,0.1)">📸</div><div class="app-info"><h4>Instagram Feed</h4><p>Shoppable Instagram gallery on homepage to build social proof and engagement.</p><span class="app-tag">Free Plan ✓</span></div></div>
+      <div class="app-card"><div class="app-logo" style="background:rgba(24,119,242,0.1)">👍</div><div class="app-info"><h4>Facebook Channel</h4><p>Sync products with Facebook catalog and enable social selling & Pixel tracking.</p><span class="app-tag">Free ✓</span></div></div>
+    </div>
+    <div class="alert alert-warn" style="margin-bottom:24px"><div class="alert-icon">⚠️</div><div><h4>App Selection Rules</h4><p>Always choose apps that are <strong>"Built for Shopify"</strong> certified and offer a free plan. Avoid apps with low ratings, excessive page-load scripts, or no free tier — they add ongoing costs.</p></div></div>
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">After Installing an App</h3>
+    <div class="steps" style="max-width:600px">
+      <div class="step"><div class="step-bullet">1</div><div><h4>Go to Theme Editor</h4><p>Online Store → Themes → Customize. The app block will appear in available blocks.</p></div></div>
+      <div class="step"><div class="step-bullet">2</div><div><h4>Find the App Block</h4><p>In the target section, click "Add block" and find the app in the list.</p></div></div>
+      <div class="step"><div class="step-bullet">3</div><div><h4>Enable & Configure</h4><p>Toggle the app block on, configure its settings (stars display, max reviews, layout), and position it.</p></div></div>
+      <div class="step"><div class="step-bullet">4</div><div><h4>Save</h4><p>Click Save in the top right. Changes apply to your draft theme immediately.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 8: PRODUCTS ─── -->
+<div id="page-products" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 08</div><h1>Adding<br/><em>Products</em></h1><p>Two methods to get your products into Shopify — bulk CSV import or manual entry with full control.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">📦</div><div class="section-hd-text"><div class="s-step">Products → Add Product</div><h2 class="s-title">Two Methods Covered</h2></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'prod-csv')">📄 Method 1: CSV Import</button>
+      <button class="tab-btn" onclick="switchTab(this,'prod-manual')">✏️ Method 2: Manual Upload</button>
+    </div>
+    <div id="tab-prod-csv" class="tab-panel active">
+      <p style="color:var(--text2);font-size:14px;margin-bottom:22px;max-width:600px">Best for large catalogs (50+ products). Map your product data to Shopify's exact CSV structure.</p>
+      <div class="steps" style="max-width:640px;margin-bottom:20px">
+        <div class="step"><div class="step-bullet">1</div><div><h4>Download Shopify Sample CSV</h4><p>Go to Products → Import → Download Sample CSV template. This is your required format.</p></div></div>
+        <div class="step"><div class="step-bullet">2</div><div><h4>Map Client's Data</h4><p>Map every column from the client's spreadsheet to Shopify's exact headers. Field names must match exactly.</p></div></div>
+        <div class="step"><div class="step-bullet">3</div><div><h4>Required CSV Columns</h4><p>Handle, Title, Body (HTML), Vendor, Type, Tags, Published, Option Name, Price, Image Src, Image Alt Text.</p></div></div>
+        <div class="step"><div class="step-bullet">4</div><div><h4>Import the File</h4><p>Products → Import → Upload your filled CSV → Choose overwrite settings → Click Import Products.</p></div></div>
+      </div>
+      <div class="alert alert-danger"><div class="alert-icon">⛔</div><div><h4>Column Headers Must Match Exactly</h4><p>Shopify rejects any column not in the sample template. Unknown columns are ignored or cause import failure. Always validate your CSV against the sample first.</p></div></div>
+    </div>
+    <div id="tab-prod-manual" class="tab-panel">
+      <p style="color:var(--text2);font-size:14px;margin-bottom:22px;max-width:600px">Best for small catalogs or products requiring custom rich-text descriptions and precise control.</p>
+      <div class="grid grid-3">
+        <div class="card"><div class="card-icon">📝</div><h3>Title & Description</h3><p>Write SEO-friendly titles. Use rich-text editor for structured descriptions with proper H2/H3 headings.</p></div>
+        <div class="card"><div class="card-icon">🖼️</div><h3>Images</h3><p>Upload high-quality images (1000×1000px min). Add descriptive alt text for every image for SEO + accessibility.</p></div>
+        <div class="card"><div class="card-icon">💰</div><h3>Pricing</h3><p>Set price, compare-at price (shows as strikethrough for sales), and cost-per-item for margin tracking.</p></div>
+        <div class="card"><div class="card-icon">🎛</div><h3>Variants</h3><p>Add up to 3 option types: Size, Color, Material. Each combination gets its own SKU, price, and inventory level.</p></div>
+        <div class="card"><div class="card-icon">🔍</div><h3>SEO Details</h3><p>Edit the SEO preview: meta title (60 chars max), meta description (155 chars), and URL handle (slug).</p></div>
+        <div class="card"><div class="card-icon">🏷</div><h3>Tags & Collections</h3><p>Add relevant tags for filtering. Assign to collections so products appear in the right category pages.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 9: COLLECTIONS ─── -->
+<div id="page-collections" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 09</div><h1>Collections &<br/><em>Navigation</em></h1><p>Organize products into logical categories and build clear navigation for a great user experience.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">📂</div><div class="section-hd-text"><div class="s-step">Products & Content</div><h2 class="s-title">Collections, Menus & Legal Pages</h2></div></div>
+    <div class="grid grid-2" style="margin-bottom:28px">
+      <div>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Creating Collections</h3>
+        <div class="steps">
+          <div class="step"><div class="step-bullet">1</div><div><h4>Products → Collections</h4><p>Click "Create Collection" to start.</p></div></div>
+          <div class="step"><div class="step-bullet">2</div><div><h4>Choose Type</h4><p><strong>Manual</strong>: Handpick each product. <strong>Automated</strong>: Products added automatically by tag, price, or vendor rules.</p></div></div>
+          <div class="step"><div class="step-bullet">3</div><div><h4>Add SEO & Image</h4><p>Upload a collection banner image, write a meta title and description for search engines.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Navigation Menus</h3>
+        <div class="steps">
+          <div class="step"><div class="step-bullet">1</div><div><h4>Content → Navigation</h4><p>Open Header Menu and Footer Menu to edit both.</p></div></div>
+          <div class="step"><div class="step-bullet">2</div><div><h4>Add Menu Items</h4><p>Link to: collections, pages, products, or external URLs. Nest items for dropdown menus.</p></div></div>
+          <div class="step"><div class="step-bullet">3</div><div><h4>Drag to Reorder</h4><p>Drag the handle icons to reorder menu items. Save when satisfied.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:16px">⚖️ Mandatory Legal Pages</h3>
+    <div class="grid grid-3" style="margin-bottom:18px">
+      <div class="card" style="border-color:rgba(255,181,71,0.25)"><div class="card-icon">🔒</div><h3>Privacy Policy</h3><p>Required by GDPR & CCPA. Shopify generates a free template in Settings → Policies.</p></div>
+      <div class="card" style="border-color:rgba(255,181,71,0.25)"><div class="card-icon">↩️</div><h3>Refund Policy</h3><p>State return windows, conditions, and how refunds are processed. Builds customer trust.</p></div>
+      <div class="card" style="border-color:rgba(255,181,71,0.25)"><div class="card-icon">📜</div><h3>Terms & Conditions</h3><p>Acceptable use, liability limits, and service agreement terms for the store.</p></div>
+      <div class="card"><div class="card-icon">👋</div><h3>About Us</h3><p>Brand story and mission. Builds trust with first-time visitors and improves SEO.</p></div>
+      <div class="card"><div class="card-icon">📞</div><h3>Contact Us</h3><p>Contact form + email, phone, and address. Also required for Google Merchant Center.</p></div>
+    </div>
+    <div class="alert alert-warn"><div class="alert-icon">⚖️</div><div><h4>These Pages Are Legally Required</h4><p>Privacy Policy, Refund Policy, and Terms & Conditions are required by law for eCommerce stores in most countries. Use Settings → Policies for auto-generated templates, then customize with client-specific details.</p></div></div>
+  </div>
+</div>
+
+<!-- ─── PAGE 10: PAYMENTS ─── -->
+<div id="page-payments" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 10</div><h1>Payment &<br/><em>Checkout Setup</em></h1><p>Configure payment gateways, currencies, and checkout experience for maximum conversion.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">💳</div><div class="section-hd-text"><div class="s-step">Settings → Payments</div><h2 class="s-title">Payment Gateways</h2></div></div>
+    <div class="gateway-grid" style="margin-bottom:28px">
+      <div class="gw-card"><div class="gw-icon">🛍</div><h4>Shopify Payments</h4><p>Built-in, no transaction fees. Available in select countries.</p></div>
+      <div class="gw-card"><div class="gw-icon">🌐</div><h4>PayPal</h4><p>Globally trusted. Express checkout. Good conversion rate.</p></div>
+      <div class="gw-card"><div class="gw-icon">💎</div><h4>Razorpay</h4><p>Best for India — UPI, Net Banking, Wallets, Cards all supported.</p></div>
+      <div class="gw-card"><div class="gw-icon">🇨🇳</div><h4>Alipay</h4><p>For stores targeting Chinese customers or cross-border commerce.</p></div>
+      <div class="gw-card"><div class="gw-icon">💳</div><h4>Stripe</h4><p>Developer-friendly. Global reach with excellent fraud protection.</p></div>
+      <div class="gw-card"><div class="gw-icon">🏦</div><h4>Manual Payments</h4><p>Bank transfer, cash on delivery — configure custom payment instructions.</p></div>
+    </div>
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:16px">Checkout Configuration</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td>💱 Currency</td><td>Set primary currency (USD, INR, EUR). Enable multi-currency for international stores.</td></tr>
+          <tr><td>👤 Customer Accounts</td><td>"Optional" recommended — never force account creation, it significantly hurts conversion rates.</td></tr>
+          <tr><td>📦 Shipping Origin</td><td>Set accurate warehouse address for correct rate calculations and tax compliance.</td></tr>
+          <tr><td>🧾 Order Processing</td><td>Auto-fulfill for digital products; manual fulfillment for physical goods requiring packing.</td></tr>
+          <tr><td>📬 Email Notifications</td><td>Customize order confirmation, shipping, and refund emails with client brand colors and logo.</td></tr>
+          <tr><td>✅ Checkout Branding</td><td>Settings → Checkout → Customize Checkout: add logo, brand colors for consistent experience.</td></tr>
+          <tr><td>🏷 Tipping</td><td>Enable tipping option if relevant (food, services, artisan products).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAGE 11: LAYOUT ─── -->
+<div id="page-layout" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Module 11</div><h1>Final Store<br/><em>Layout</em></h1><p>Typical homepage structure we build and the conversion-focused layout principles behind it.</p></div>
+  <div class="section visible">
+    <div class="section-hd"><div class="section-icon">🚀</div><div class="section-hd-text"><div class="s-step">Homepage Structure</div><h2 class="s-title">Conversion-Focused Layout</h2></div></div>
+    <div class="grid grid-2">
+      <div>
+        <div class="wireframe">
+          <div class="wf-row"><div class="wf-left"><h5>🖼 Hero Banner</h5><p>Full-width, strong headline + primary CTA above fold</p></div><div class="wf-num">1</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>⭐ Featured Products</h5><p>4–8 best-sellers or new arrivals grid</p></div><div class="wf-num">2</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>📂 Collections Grid</h5><p>Category tiles for easy browsing</p></div><div class="wf-num">3</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>🛡 Trust Badges</h5><p>Free shipping, secure checkout, easy returns</p></div><div class="wf-num">4</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>🎬 Video Section</h5><p>Brand story or product demo / unboxing</p></div><div class="wf-num">5</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>💬 Reviews</h5><p>Judge.me review carousel with star ratings</p></div><div class="wf-num">6</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>❓ FAQs</h5><p>Accordion answers to most common questions</p></div><div class="wf-num">7</div></div>
+          <div class="wf-row"><div class="wf-left"><h5>📬 Contact Form</h5><p>Simple form + contact details section</p></div><div class="wf-num">8</div></div>
+          <div class="wf-row" style="border:none"><div class="wf-left"><h5>🔗 Footer</h5><p>Policies, links, newsletter, social icons</p></div><div class="wf-num">9</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="alert alert-info" style="margin-bottom:16px"><div class="alert-icon">🎯</div><div><h4>Conversion-Focused Principles</h4><p>Every element serves a purpose: hero builds interest, trust badges reduce friction, reviews provide social proof, FAQs eliminate objections. The goal is a clear path from landing to purchase.</p></div></div>
+        <div class="card">
+          <h3 style="margin-bottom:12px">Final Checklist Before Publishing</h3>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> Test checkout with real order (then cancel/refund)</div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> Check all pages on mobile devices</div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> Verify all navigation links work</div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> Confirm payment gateway is live mode</div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> All legal pages added to footer nav</div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--green)">✓</span> Get written client approval before launch</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="gotoPage('checklist',null)">Open Full Launch Checklist →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SIMULATOR PAGE ─── -->
+<div id="page-simulator" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Interactive Tool</div><h1>Store<br/><em>Simulator</em></h1><p>Fill in the form below and see a live preview of how your Shopify store would look.</p></div>
+  <div class="sim-wrap">
+    <div class="sim-layout">
+      <div class="sim-panel">
+        <div class="sim-panel-header">🎛 Store Configuration</div>
+        <div class="sim-body">
+          <div class="sim-field"><label>Store Name</label><input type="text" id="sim-name" value="Bloom & Co" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Tagline</label><input type="text" id="sim-tagline" value="Premium Natural Skincare" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Hero Headline</label><input type="text" id="sim-hero" value="Skin That Glows Naturally" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Hero Sub-text</label><input type="text" id="sim-sub" value="Handcrafted with organic ingredients for radiant skin." oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Primary Color</label><input type="color" id="sim-color" value="#95BF47" oninput="updatePreview()" style="height:40px;cursor:pointer"/></div>
+          <div class="sim-field"><label>Button Text</label><input type="text" id="sim-btn-text" value="Shop Now" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Product 1</label><input type="text" id="sim-p1" value="Glow Serum" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Product 2</label><input type="text" id="sim-p2" value="Hydra Mask" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Product 3</label><input type="text" id="sim-p3" value="Night Cream" oninput="updatePreview()"/></div>
+          <div class="sim-field"><label>Currency</label>
+            <select id="sim-currency" onchange="updatePreview()">
+              <option value="$">USD ($)</option><option value="₹">INR (₹)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:12px">🖥 Live Preview</div>
+        <div class="store-preview" id="store-preview-box">
+          <div class="store-nav-bar">
+            <div class="store-logo-preview" id="prev-logo">Bloom & Co</div>
+            <div class="store-nav-links">
+              <span>Home</span><span>Shop</span><span>About</span><span>Contact</span>
+            </div>
+          </div>
+          <div class="store-hero-band" id="prev-hero-band" style="background:linear-gradient(135deg,#e8f5e0,#f0fce8)">
+            <h2 id="prev-hero">Skin That Glows Naturally</h2>
+            <p id="prev-sub">Handcrafted with organic ingredients for radiant skin.</p>
+            <button class="store-cta-btn" id="prev-btn" style="background:#95BF47">Shop Now</button>
+          </div>
+          <div class="store-products" id="prev-products">
+            <div class="store-product"><div class="store-product-img">🧴</div><div class="store-product-info"><p id="pp1">Glow Serum</p><span id="pc1">$29.99</span></div></div>
+            <div class="store-product"><div class="store-product-img">🧖</div><div class="store-product-info"><p id="pp2">Hydra Mask</p><span id="pc2">$24.99</span></div></div>
+            <div class="store-product"><div class="store-product-img">🌙</div><div class="store-product-info"><p id="pp3">Night Cream</p><span id="pc3">$34.99</span></div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn btn-outline" style="width:100%" onclick="exportSimulator()">📋 Copy Store Config Summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── QUIZ PAGE ─── -->
+<div id="page-quiz" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Knowledge Check</div><h1>Shopify<br/><em>Knowledge Quiz</em></h1><p>Test your understanding across all 11 modules. 10 questions, immediate feedback.</p></div>
+  <div class="quiz-wrap">
+    <div id="quiz-main">
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-num"><span id="q-num">Question 1 of 10</span><span id="q-score-live">Score: 0</span></div>
+        <div class="quiz-track"><div class="quiz-fill" id="q-fill" style="width:10%"></div></div>
+      </div>
+      <div id="q-text" class="quiz-q"></div>
+      <div id="q-opts" class="quiz-options"></div>
+      <div id="q-feedback" class="quiz-feedback"></div>
+      <div class="quiz-nav">
+        <div style="font-size:12px;color:var(--text3)" id="q-hint"></div>
+        <button class="btn btn-primary" id="q-next" onclick="nextQuestion()" style="display:none">Next Question →</button>
+      </div>
+    </div>
+    <div class="quiz-score" id="quiz-result">
+      <div class="score-ring"><span id="final-pct"></span><small>score</small></div>
+      <h2 id="final-msg"></h2>
+      <p id="final-sub"></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="restartQuiz()">🔄 Retake Quiz</button>
+        <button class="btn btn-outline" onclick="gotoPage('intro',null)">📚 Review Content</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── NOTES PAGE ─── -->
+<div id="page-notes" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Personal Tool</div><h1>My<br/><em>Notes</em></h1><p>Write and save your notes as you go through the tutorial. Notes persist in your session.</p></div>
+  <div class="notes-wrap">
+    <div class="notes-toolbar">
+      <button class="notes-btn" onclick="insertNote('## New Section\n\n')">H2</button>
+      <button class="notes-btn" onclick="insertNote('**Bold text**')">Bold</button>
+      <button class="notes-btn" onclick="insertNote('\n- Item 1\n- Item 2\n- Item 3\n')">List</button>
+      <button class="notes-btn" onclick="insertNote('\n> Important note:\n')">Quote</button>
+      <button class="notes-btn" onclick="insertNote('\n---\n')">Divider</button>
+      <button class="notes-btn" onclick="insertNote('`code snippet`')">Code</button>
+      <button class="notes-btn" onclick="clearNoteEditor()">Clear</button>
+      <button class="notes-btn active-note-btn" onclick="saveNote()">💾 Save Note</button>
+      <span class="notes-saved" id="note-saved">✓ Saved!</span>
+    </div>
+    <textarea id="notes-editor" placeholder="Write your notes here...&#10;&#10;Tip: Use the toolbar buttons above to format your notes quickly."></textarea>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:12px">
+      <h3 style="font-size:14px;font-weight:700">Saved Notes</h3>
+      <span style="font-size:12px;color:var(--text2)" id="notes-count">0 notes saved</span>
+    </div>
+    <div class="saved-notes-list" id="saved-notes-list">
+      <div style="font-size:13px;color:var(--text3);padding:16px;text-align:center;background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius)">No saved notes yet. Write something above and click Save.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GLOSSARY PAGE ─── -->
+<div id="page-glossary" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Reference</div><h1>Shopify<br/><em>Glossary</em></h1><p>Quick definitions for all key Shopify terms used throughout this guide.</p></div>
+  <div style="padding:40px 56px;max-width:900px">
+    <input type="text" class="glossary-search" id="glossary-search" placeholder="Search terms..." oninput="filterGlossary(this.value)"/>
+    <div class="glossary-list" id="glossary-list">
+      <dl class="glossary-item visible"><dt>Shopify Partners</dt><dd>A free program for designers, developers, and marketers who build Shopify stores for clients. Partners earn revenue share and can manage multiple stores from one dashboard.</dd></dl>
+      <dl class="glossary-item visible"><dt>Collaborator Access</dt><dd>A method for developers/agencies to access a client's existing Shopify store using a 4-digit code, with specific permissions selected during the request.</dd></dl>
+      <dl class="glossary-item visible"><dt>Client Transfer Store</dt><dd>A store created by a Partner on behalf of a client, built under the Partner account and then transferred to the client's ownership upon project completion.</dd></dl>
+      <dl class="glossary-item visible"><dt>Dawn Theme</dt><dd>Shopify's free, flagship theme. Preferred for its clean structure, high customizability, and easy custom code integration. Built with Online Store 2.0.</dd></dl>
+      <dl class="glossary-item visible"><dt>Liquid</dt><dd>Shopify's templating language used to build and customize storefronts. Files use the .liquid extension and support variables, filters, and logic tags.</dd></dl>
+      <dl class="glossary-item visible"><dt>Online Store 2.0</dt><dd>Shopify's updated theme architecture enabling sections and blocks on every page (not just the homepage), introduced in 2021.</dd></dl>
+      <dl class="glossary-item visible"><dt>Theme Editor</dt><dd>The visual drag-and-drop editor in Shopify admin (Online Store → Themes → Customize) for adding, rearranging, and editing sections without code.</dd></dl>
+      <dl class="glossary-item visible"><dt>Sections</dt><dd>Modular, customizable content blocks in a theme (hero banner, product grid, testimonials, etc.) that merchants can add, remove, and reorder.</dd></dl>
+      <dl class="glossary-item visible"><dt>App Block</dt><dd>A type of section/block added by third-party apps through the Theme Editor, allowing apps to display content directly within theme sections.</dd></dl>
+      <dl class="glossary-item visible"><dt>Judge.me</dt><dd>A popular Shopify review app with a generous free plan, supporting photo reviews, verified badges, and SEO-rich structured data snippets.</dd></dl>
+      <dl class="glossary-item visible"><dt>CSV Import</dt><dd>Bulk product upload method using a comma-separated values file. Shopify requires specific column headers; use their sample template as the base.</dd></dl>
+      <dl class="glossary-item visible"><dt>Variants</dt><dd>Different versions of a product (e.g., Size: S/M/L, Color: Red/Blue). Each variant combination can have a unique SKU, price, and inventory level.</dd></dl>
+      <dl class="glossary-item visible"><dt>Collections</dt><dd>Groups of products organized by category, type, or rules. Can be Manual (handpicked) or Automated (rule-based by tag, price, or vendor).</dd></dl>
+      <dl class="glossary-item visible"><dt>Shopify Payments</dt><dd>Shopify's native payment processor with no transaction fees (only standard card processing fees). Available in select countries.</dd></dl>
+      <dl class="glossary-item visible"><dt>Metafields</dt><dd>Custom data fields that can store additional information for products, collections, customers, and orders beyond Shopify's built-in fields.</dd></dl>
+      <dl class="glossary-item visible"><dt>Handle</dt><dd>The URL-friendly identifier for a product, collection, or page (e.g., "blue-cotton-t-shirt"). Used in the page URL slug. Must be unique.</dd></dl>
+      <dl class="glossary-item visible"><dt>Shopify Search & Discovery</dt><dd>A free app by Shopify that adds advanced product filtering (by size, color, etc.) and improves search result relevance and recommendations.</dd></dl>
+      <dl class="glossary-item visible"><dt>Checkout Branding</dt><dd>Shopify's feature allowing merchants to add logos and brand colors to the checkout pages for a consistent branded purchase experience.</dd></dl>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHECKLIST PAGE ─── -->
+<div id="page-checklist" class="page">
+  <div class="hero"><div class="hero-grid"></div><div class="hero-orb"></div><div class="hero-eyebrow"><span class="hero-dot"></span>Pre-Launch Tool</div><h1>Launch<br/><em>Checklist</em></h1><p>Complete every item before transferring the store to your client. Click each item to check it off.</p></div>
+  <div style="padding:40px 56px;max-width:800px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Overall Progress</div>
+        <div style="height:8px;width:300px;background:var(--surface3);border-radius:99px;overflow:hidden"><div id="check-progress" style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:99px;width:0%;transition:width 0.4s"></div></div>
+      </div>
+      <div style="text-align:right"><div id="check-pct" style="font-family:'Clash Display',sans-serif;font-weight:700;font-size:22px;color:var(--green)">0%</div><div style="font-size:11px;color:var(--text2)" id="check-fraction">0 / 0</div></div>
+    </div>
+    <button class="btn btn-outline" style="margin-bottom:24px;font-size:12px" onclick="resetChecklist()">🔄 Reset All</button>
+
+    <div class="check-cat">🏗 Store Setup</div>
+    <div class="checklist" id="main-checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Partner account created and verified</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Client store created (or collaborator access granted)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Store location set correctly (country/region)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Live theme duplicated to draft before any editing</span></div>
+
+      <div class="check-cat">🎨 Design & Theme</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Logo uploaded with transparent background</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Brand colors configured in Theme Settings</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Typography set (heading + body fonts)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Social media links added to Theme Settings</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Header and footer configured correctly</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Homepage sections arranged (hero, products, trust, reviews, FAQ)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Mobile responsiveness tested on multiple screen sizes</span></div>
+
+      <div class="check-cat">🔌 Apps</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Judge.me installed and review blocks enabled in theme</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Shopify Search & Discovery configured with filters</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Instagram / Facebook integrations set up (if required)</span></div>
+
+      <div class="check-cat">📦 Products & Collections</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>All products added with titles, descriptions, and images</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Alt text added to all product images</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Product SEO (meta title + description) completed</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Collections created and products assigned</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Navigation menus (header + footer) configured</span></div>
+
+      <div class="check-cat">⚖️ Legal Pages</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Privacy Policy page created and added to footer nav</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Refund Policy page created and added to footer nav</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Terms & Conditions page created and added to footer nav</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>About Us page created</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Contact Us page with form created</span></div>
+
+      <div class="check-cat">💳 Payments & Checkout</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Payment gateway configured and set to LIVE mode</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Currency set correctly for target market</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Test order placed successfully (then cancelled)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Email notifications customized with brand</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Checkout branding configured (logo + colors)</span></div>
+
+      <div class="check-cat">🚀 Pre-Launch</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Client has reviewed and approved all pages</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Store password removed (store is publicly accessible)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Google Analytics / Pixel tracking added (if required)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Store transferred to client's account</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span>Client onboarding doc delivered</span></div>
+    </div>
+
+    <div style="margin-top:20px;padding:16px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);font-size:13px" id="checklist-msg">
+      Start checking off items above to track your launch progress.
+    </div>
+  </div>
+</div>
+
+<!-- ─── BOOKMARK MODAL ─── -->
+<div class="modal-overlay" id="bookmark-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🔖 Bookmarks</h3>
+      <button class="modal-close" onclick="closeModal('bookmark-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Bookmark pages you want to revisit quickly.</p>
+      <div id="bookmark-list"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border2);padding-top:16px">
+        <p style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text2)">ALL PAGES</p>
+        <div style="display:flex;flex-direction:column;gap:6px" id="bookmark-all-pages"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div id="toast">
+  <span id="toast-icon">✓</span>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+const state = {
+  currentPage: 'intro',
+  visitedPages: new Set(['intro']),
+  theme: 'dark',
+  fontSize: 'md',
+  notes: [],
+  bookmarks: [],
+  quizScore: 0,
+  quizIndex: 0,
+  quizAnswered: false,
+  checklistItems: 0,
+  checklistDone: 0
+};
+
+const PAGES = ['intro','partners','client-store','collaborator','design','global-settings','apps','products','collections','payments','layout'];
+const PAGE_TITLES = {
+  home:'Dashboard',intro:'Introduction',partners:'Partners Dashboard',
+  'client-store':'Client Transfer Store',collaborator:'Collaborator Access',
+  design:'Designing the Store','global-settings':'Global Theme Settings',
+  apps:'Apps Integration',products:'Adding Products',collections:'Collections & Navigation',
+  payments:'Payment & Checkout',layout:'Final Store Layout',
+  simulator:'Store Simulator',quiz:'Knowledge Quiz',notes:'My Notes',
+  glossary:'Glossary',checklist:'Launch Checklist'
+};
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function gotoPage(id, navEl) {
+  // hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('search-page').style.display = 'none';
+
+  const page = document.getElementById('page-' + id);
+  if (!page) return;
+  page.classList.add('active');
+  state.currentPage = id;
+  document.getElementById('topbar-title-text').textContent = PAGE_TITLES[id] || id;
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(i => {
+    i.classList.remove('active');
+    if (i.dataset.page === id) i.classList.add('active');
+  });
+  if (navEl) { navEl.classList.add('active'); }
+
+  // Track module progress
+  if (PAGES.includes(id)) {
+    state.visitedPages.add(id);
+    updateProgress();
+    document.querySelectorAll('.nav-item').forEach(i => {
+      if (PAGES.includes(i.dataset.page) && state.visitedPages.has(i.dataset.page)) {
+        i.classList.add('completed');
+      }
+    });
+  }
+
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+  // animate sections
+  setTimeout(() => {
+    page.querySelectorAll('.section').forEach((s,i) => {
+      setTimeout(() => s.classList.add('visible'), i * 80);
+    });
+  }, 50);
+}
+
+function updateProgress() {
+  const pct = Math.round((state.visitedPages.size / PAGES.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-count').textContent = state.visitedPages.size + '/' + PAGES.length;
+}
+
+/* ============================================================
+   SIDEBAR MOBILE
+============================================================ */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* ============================================================
+   READING PROGRESS
+============================================================ */
+window.addEventListener('scroll', () => {
+  const t = window.scrollY, h = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('reading-progress').style.width = (h > 0 ? (t/h)*100 : 0) + '%';
+});
+
+/* ============================================================
+   THEME
+============================================================ */
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('theme-btn').textContent = state.theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+  showToast(state.theme === 'dark' ? '🌙 Dark mode on' : '☀️ Light mode on');
+}
+
+/* ============================================================
+   FONT SIZE
+============================================================ */
+function adjustFont(size) {
+  document.documentElement.setAttribute('data-fontsize', size);
+  state.fontSize = size;
+  showToast('Font size: ' + size.toUpperCase());
+}
+
+/* ============================================================
+   SEARCH
+============================================================ */
+const SEARCH_DATA = [
+  {page:'intro',title:'Introduction',text:'overview workflow Shopify Partners store transfer design apps products payments launch'},
+  {page:'partners',title:'Partners Dashboard',text:'partners.shopify.com log in stores list collaborator create store management'},
+  {page:'client-store',title:'Client Transfer Store',text:'create store client url location transfer access preview link'},
+  {page:'collaborator',title:'Collaborator Access',text:'collaborator code 4 digit request access existing store permissions approve'},
+  {page:'design',title:'Designing the Store',text:'theme editor dawn shrine custom liquid sections header footer duplicate live'},
+  {page:'global-settings',title:'Global Theme Settings',text:'logo colors typography fonts buttons icons social media facebook instagram youtube'},
+  {page:'apps',title:'Apps Integration',text:'judge.me reviews search discovery instagram feed facebook channel free plan'},
+  {page:'products',title:'Adding Products',text:'csv import manual upload title description images price variants seo tags'},
+  {page:'collections',title:'Collections & Navigation',text:'collections manual automated navigation menus header footer privacy refund terms'},
+  {page:'payments',title:'Payment & Checkout',text:'shopify payments paypal razorpay stripe currency checkout branding'},
+  {page:'layout',title:'Final Store Layout',text:'hero banner featured products trust badges video reviews faq contact footer'},
+  {page:'simulator',title:'Store Simulator',text:'preview interactive live store name color button product'},
+  {page:'quiz',title:'Knowledge Quiz',text:'quiz test knowledge questions answers score'},
+  {page:'glossary',title:'Glossary',text:'liquid dawn collaborator variants metafields handle collections sections'},
+  {page:'checklist',title:'Launch Checklist',text:'checklist launch pre-launch legal pages payment test mobile'},
+];
+
+function liveSearch(q) {
+  if (!q || q.trim().length < 2) {
+    document.getElementById('search-page').style.display = 'none';
+    if (state.currentPage) {
+      const p = document.getElementById('page-' + state.currentPage);
+      if (p) p.classList.add('active');
+    }
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const sp = document.getElementById('search-page');
+  sp.style.display = 'block';
+  document.getElementById('search-query-label').textContent = q;
+
+  const results = SEARCH_DATA.filter(d =>
+    d.title.toLowerCase().includes(q.toLowerCase()) ||
+    d.text.toLowerCase().includes(q.toLowerCase())
+  );
+
+  const body = document.getElementById('search-results-body');
+  if (!results.length) {
+    body.innerHTML = '<p style="color:var(--text2);font-size:14px">No results found for "' + q + '"</p>';
+    return;
+  }
+  body.innerHTML = results.map(r => {
+    const hl = r.title.replace(new RegExp(q,'gi'), m => '<span class="search-highlight">'+m+'</span>');
+    return `<div class="search-result-item" onclick="gotoPage('${r.page}',null)">
+      <h4>${hl}</h4><p>${r.text.split(' ').slice(0,12).join(' ')}...</p>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   THEME PICKER (design page)
+============================================================ */
+function pickTheme(el, name) {
+  document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('picked'));
+  el.classList.add('picked');
+  showToast('Theme selected: ' + name);
+}
+
+/* ============================================================
+   TABS
+============================================================ */
+function switchTab(btn, id) {
+  const parent = btn.closest('.section') || btn.closest('.quiz-wrap') || btn.closest('#page-design') || document.body;
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  parent.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('tab-' + id);
+  if (panel) panel.classList.add('active');
+}
+
+/* ============================================================
+   COPY CODE
+============================================================ */
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    showToast('Code copied to clipboard!');
+  });
+}
+
+/* ============================================================
+   SIMULATOR
+============================================================ */
+function updatePreview() {
+  const name = document.getElementById('sim-name').value || 'My Store';
+  const tagline = document.getElementById('sim-tagline').value;
+  const hero = document.getElementById('sim-hero').value;
+  const sub = document.getElementById('sim-sub').value;
+  const color = document.getElementById('sim-color').value;
+  const btnTxt = document.getElementById('sim-btn-text').value;
+  const p1 = document.getElementById('sim-p1').value || 'Product 1';
+  const p2 = document.getElementById('sim-p2').value || 'Product 2';
+  const p3 = document.getElementById('sim-p3').value || 'Product 3';
+  const cur = document.getElementById('sim-currency').value;
+
+  document.getElementById('prev-logo').textContent = name;
+  document.getElementById('prev-hero').textContent = hero;
+  document.getElementById('prev-sub').textContent = sub;
+  document.getElementById('prev-btn').textContent = btnTxt;
+  document.getElementById('prev-btn').style.background = color;
+  document.getElementById('prev-hero-band').style.background = `linear-gradient(135deg, ${color}15, ${color}08)`;
+
+  document.getElementById('pp1').textContent = p1;
+  document.getElementById('pp2').textContent = p2;
+  document.getElementById('pp3').textContent = p3;
+
+  const prices = [29.99, 24.99, 34.99];
+  ['pc1','pc2','pc3'].forEach((id,i) => document.getElementById(id).textContent = cur + prices[i]);
+}
+
+function exportSimulator() {
+  const summary = `=== SHOPIFY STORE CONFIG ===
+Store Name: ${document.getElementById('sim-name').value}
+Tagline: ${document.getElementById('sim-tagline').value}
+Hero Headline: ${document.getElementById('sim-hero').value}
+Hero Sub-text: ${document.getElementById('sim-sub').value}
+Primary Color: ${document.getElementById('sim-color').value}
+Button Text: ${document.getElementById('sim-btn-text').value}
+Products: ${document.getElementById('sim-p1').value}, ${document.getElementById('sim-p2').value}, ${document.getElementById('sim-p3').value}
+Currency: ${document.getElementById('sim-currency').value}
+Generated: ${new Date().toLocaleString()}`;
+  navigator.clipboard.writeText(summary).then(() => showToast('Store config copied!'));
+}
+
+/* ============================================================
+   QUIZ
+============================================================ */
+const QUIZ = [
+  { q: "When should you use the 'Client Transfer Store' method in Shopify Partners?", opts: ["When the client already has a Shopify store","When the client does NOT have a Shopify store yet","When you need read-only access","When working on a development theme"], ans: 1, exp: "Client Transfer Store is for building from scratch when the client has no existing store. You build it, then transfer ownership." },
+  { q: "What is the GOLDEN RULE when editing a Shopify theme?", opts: ["Always edit the live theme for fastest results","Duplicate the theme first, edit the draft, publish after approval","Edit the theme code directly in production","Share your screen with the client while editing"], ans: 1, exp: "Never edit the live theme! Always duplicate it first, work on the draft copy, and only publish after client approval to avoid breaking live stores." },
+  { q: "After transferring a Shopify store to a client, how do you regain access to work on it again?", opts: ["Log into the client's Shopify account","Use the original store URL to bypass security","Client must provide a new collaborator code","Request access through Shopify Support"], ans: 2, exp: "After transfer, your partner access is removed. For future work, the client generates a new collaborator code and you request access again through Partners." },
+  { q: "Which file extension MUST be used for custom Shopify theme section files?", opts: [".html",".jsx",".liquid",".shopify"], ans: 2, exp: "All Shopify theme files use the .liquid extension — Shopify's templating language. The editor won't recognize files with other extensions." },
+  { q: "Where are social media links configured so they appear automatically in the header and footer?", opts: ["In each header/footer section separately","In Settings → General → Social","In Global Theme Settings inside the Theme Editor","In the App Store social integration app"], ans: 2, exp: "Social links added in Theme Settings (Global) automatically render as icons in the header and footer when the icon display toggle is enabled in those sections." },
+  { q: "What criteria MUST you check before installing any Shopify app?", opts: ["It has over 1,000 reviews","It is 'Built for Shopify' certified and has a free plan","It was released after 2022","It is owned by Shopify"], ans: 1, exp: "Always choose apps that are 'Built for Shopify' certified (meets quality standards) and offer a free plan. Avoid apps with poor ratings or that add excessive page-load scripts." },
+  { q: "For a large product catalog (200+ products), which upload method is recommended?", opts: ["Manual upload one by one","Drag and drop from desktop","CSV import using Shopify's sample template","Copy from a competitor store"], ans: 2, exp: "CSV import is ideal for large catalogs. Download Shopify's sample CSV template, map your product data to its exact columns, and import in bulk." },
+  { q: "Which Shopify app is recommended for product reviews?", opts: ["Yotpo","Stamped.io","Judge.me","Loox"], ans: 2, exp: "Judge.me is recommended — it has a generous free plan, supports photo reviews, verified purchase badges, and outputs SEO-rich structured data snippets." },
+  { q: "Which customer account setting is recommended for checkout to maximize conversion?", opts: ["Required — force all customers to create accounts","Disabled — no accounts at all","Optional — customers can checkout as guest","Verified — email must be confirmed first"], ans: 2, exp: "Setting accounts to 'Optional' is recommended. Forcing account creation is a top cause of cart abandonment. Let customers choose to create an account." },
+  { q: "Which of these is a LEGALLY REQUIRED page for most eCommerce stores?", opts: ["FAQ Page","Shipping Information","Privacy Policy","Our Story / About Us"], ans: 2, exp: "Privacy Policy is required by law in most countries (GDPR, CCPA, etc.). Shopify provides a free generator in Settings → Policies. Refund Policy and Terms & Conditions are also required." },
+];
+
+let quizOrder = [];
+
+function initQuiz() {
+  quizOrder = [...Array(QUIZ.length).keys()].sort(() => Math.random() - 0.5);
+  state.quizIndex = 0;
+  state.quizScore = 0;
+  document.getElementById('quiz-main').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const idx = quizOrder[state.quizIndex];
+  const q = QUIZ[idx];
+  state.quizAnswered = false;
+  document.getElementById('q-num').textContent = `Question ${state.quizIndex + 1} of ${QUIZ.length}`;
+  document.getElementById('q-score-live').textContent = `Score: ${state.quizScore}`;
+  document.getElementById('q-fill').style.width = ((state.quizIndex + 1) / QUIZ.length * 100) + '%';
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-hint').textContent = '';
+  document.getElementById('q-next').style.display = 'none';
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'quiz-feedback';
+  fb.textContent = '';
+
+  const opts = document.getElementById('q-opts');
+  opts.innerHTML = q.opts.map((o,i) =>
+    `<button class="quiz-opt" onclick="answerQuiz(${i},${idx})">${o}</button>`
+  ).join('');
+}
+
+function answerQuiz(chosen, qIdx) {
+  if (state.quizAnswered) return;
+  state.quizAnswered = true;
+  const q = QUIZ[qIdx];
+  const btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach(b => b.disabled = true);
+  btns[chosen].classList.add(chosen === q.ans ? 'correct' : 'wrong');
+  if (chosen !== q.ans) btns[q.ans].classList.add('reveal-correct');
+
+  const fb = document.getElementById('q-feedback');
+  if (chosen === q.ans) {
+    state.quizScore++;
+    fb.className = 'quiz-feedback correct-fb show';
+    fb.textContent = '✓ Correct! ' + q.exp;
+  } else {
+    fb.className = 'quiz-feedback wrong-fb show';
+    fb.textContent = '✗ Incorrect. ' + q.exp;
+  }
+  document.getElementById('q-score-live').textContent = `Score: ${state.quizScore}`;
+  document.getElementById('q-next').style.display = 'flex';
+}
+
+function nextQuestion() {
+  state.quizIndex++;
+  if (state.quizIndex >= QUIZ.length) showQuizResult();
+  else renderQuestion();
+}
+
+function showQuizResult() {
+  document.getElementById('quiz-main').style.display = 'none';
+  const res = document.getElementById('quiz-result');
+  res.style.display = 'block';
+  const pct = Math.round(state.quizScore / QUIZ.length * 100);
+  document.getElementById('final-pct').textContent = pct + '%';
+  document.getElementById('final-msg').textContent = pct >= 80 ? '🎉 Excellent Work!' : pct >= 60 ? '👍 Good Effort!' : '📚 Keep Studying!';
+  document.getElementById('final-sub').textContent = `You scored ${state.quizScore} out of ${QUIZ.length} questions. ${pct >= 80 ? 'You\'re ready to build Shopify stores professionally!' : 'Review the modules to strengthen your knowledge.'}`;
+}
+
+function restartQuiz() { initQuiz(); }
+
+/* ============================================================
+   NOTES
+============================================================ */
+function insertNote(text) {
+  const ta = document.getElementById('notes-editor');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.slice(0,start) + text + ta.value.slice(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + text.length;
+}
+
+function clearNoteEditor() {
+  document.getElementById('notes-editor').value = '';
+}
+
+function saveNote() {
+  const content = document.getElementById('notes-editor').value.trim();
+  if (!content) { showToast('⚠️ Nothing to save!'); return; }
+  const title = content.split('\n')[0].replace(/^#+\s*/,'').slice(0,40) || 'Note ' + (state.notes.length+1);
+  state.notes.push({ id: Date.now(), title, content, date: new Date().toLocaleString() });
+  renderNotes();
+  const saved = document.getElementById('note-saved');
+  saved.classList.add('show');
+  setTimeout(() => saved.classList.remove('show'), 2000);
+  showToast('📝 Note saved!');
+}
+
+function renderNotes() {
+  const list = document.getElementById('saved-notes-list');
+  document.getElementById('notes-count').textContent = state.notes.length + ' note' + (state.notes.length !== 1 ? 's' : '') + ' saved';
+  if (!state.notes.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:16px;text-align:center;background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius)">No saved notes yet. Write something above and click Save.</div>';
+    return;
+  }
+  list.innerHTML = state.notes.map(n => `
+    <div class="saved-note" onclick="loadNote(${n.id})">
+      <div class="saved-note-head">
+        <h4>${n.title}</h4>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span>${n.date}</span>
+          <button class="del-note-btn" onclick="event.stopPropagation();deleteNote(${n.id})">🗑</button>
+        </div>
+      </div>
+      <p>${n.content.slice(0,80)}...</p>
+    </div>
+  `).join('');
+}
+
+function loadNote(id) {
+  const note = state.notes.find(n => n.id === id);
+  if (note) document.getElementById('notes-editor').value = note.content;
+  showToast('Note loaded into editor');
+}
+
+function deleteNote(id) {
+  state.notes = state.notes.filter(n => n.id !== id);
+  renderNotes();
+  showToast('Note deleted');
+}
+
+/* ============================================================
+   GLOSSARY
+============================================================ */
+function filterGlossary(q) {
+  document.querySelectorAll('.glossary-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.classList.toggle('visible', !q || text.includes(q.toLowerCase()));
+  });
+}
+
+/* ============================================================
+   CHECKLIST
+============================================================ */
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  el.querySelector('.checkbox').textContent = el.classList.contains('done') ? '✓' : '';
+  updateChecklistProgress();
+}
+
+function updateChecklistProgress() {
+  const items = document.querySelectorAll('#main-checklist .check-item');
+  const done = document.querySelectorAll('#main-checklist .check-item.done');
+  const total = items.length, completed = done.length;
+  const pct = total > 0 ? Math.round(completed/total*100) : 0;
+  document.getElementById('check-progress').style.width = pct + '%';
+  document.getElementById('check-pct').textContent = pct + '%';
+  document.getElementById('check-fraction').textContent = completed + ' / ' + total;
+  const msg = document.getElementById('checklist-msg');
+  if (pct === 100) { msg.innerHTML = '🎉 <strong>All done!</strong> Your store is launch-ready. Transfer to the client!'; msg.style.borderColor = 'var(--green)'; }
+  else if (pct >= 80) { msg.textContent = '🚀 Almost there! Just a few more items to go.'; }
+  else if (pct >= 50) { msg.textContent = '👍 Halfway there! Keep going.'; }
+  else { msg.textContent = 'Start checking off items above to track your launch progress.'; msg.style.borderColor = ''; }
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#main-checklist .check-item').forEach(i => {
+    i.classList.remove('done');
+    i.querySelector('.checkbox').textContent = '';
+  });
+  updateChecklistProgress();
+  showToast('Checklist reset');
+}
+
+/* ============================================================
+   BOOKMARKS
+============================================================ */
+function openBookmarkModal() {
+  const modal = document.getElementById('bookmark-modal');
+  modal.classList.add('open');
+
+  // saved bookmarks
+  const bl = document.getElementById('bookmark-list');
+  if (!state.bookmarks.length) {
+    bl.innerHTML = '<p style="font-size:13px;color:var(--text3)">No bookmarks saved yet.</p>';
+  } else {
+    bl.innerHTML = '<p style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px">SAVED BOOKMARKS</p>' +
+      state.bookmarks.map(b => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-bottom:6px">
+          <span style="font-size:13px;cursor:pointer" onclick="gotoPage('${b.id}',null);closeModal('bookmark-modal')">${b.title}</span>
+          <button onclick="removeBookmark('${b.id}')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px">✕</button>
+        </div>`).join('');
+  }
+
+  // all pages list
+  document.getElementById('bookmark-all-pages').innerHTML = Object.entries(PAGE_TITLES).map(([id,title]) =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:13px;color:var(--text2)">${title}</span>
+      <button onclick="addBookmark('${id}','${title}')" style="font-size:11px;padding:3px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);cursor:pointer" class="notes-btn">+ Bookmark</button>
+    </div>`).join('');
+}
+
+function addBookmark(id, title) {
+  if (!state.bookmarks.find(b => b.id === id)) {
+    state.bookmarks.push({id, title});
+    showToast('🔖 Bookmarked: ' + title);
+    openBookmarkModal();
+  } else { showToast('Already bookmarked!'); }
+}
+
+function removeBookmark(id) {
+  state.bookmarks = state.bookmarks.filter(b => b.id !== id);
+  openBookmarkModal();
+  showToast('Bookmark removed');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+window.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+
+/* ============================================================
+   TOAST
+============================================================ */
+let toastTimer;
+function showToast(msg, icon = '✓') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = icon;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  gotoPage('intro', document.querySelector('[data-page="intro"]'));
+  initQuiz();
+  updateChecklistProgress();
+
+  // Intersection observer for all sections
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold: 0.08});
+  document.querySelectorAll('.section').forEach(s => io.observe(s));
+
+  showToast('👋 Welcome to the Shopify Guide!');
+});
+</script>
+</body>
+</html>
